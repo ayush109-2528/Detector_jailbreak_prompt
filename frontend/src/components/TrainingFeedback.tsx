@@ -34,7 +34,7 @@ export function TrainingFeedback({ revision }: { revision?: number }) {
   return (
     <Card
       title="Training data collection"
-      subtitle="Every analysis is saved locally. Review the intended class before including a prompt in training."
+      subtitle="Every successful analysis is saved in the configured database. Review the intended class before including a prompt in training."
       action={
         <a
           className="button secondary"

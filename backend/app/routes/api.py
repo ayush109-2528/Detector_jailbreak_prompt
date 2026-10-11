@@ -41,7 +41,7 @@ def predict(body: PredictionRequest, request: Request):
     try:
         result['analysis_id'] = request.app.state.feedback.record(result)
     except Exception as exc:
-        raise HTTPException(status_code=503, detail='Could not save the analysis. Check local feedback storage before retrying.') from exc
+        raise HTTPException(status_code=503, detail='Could not save the analysis. Check the configured feedback database and schema before retrying.') from exc
     return result
 
 

@@ -97,7 +97,7 @@ npm ci
 npm run dev
 ```
 
-Open **http://127.0.0.1:5173**. FastAPI documentation is available at **http://127.0.0.1:8000/docs**. Vite proxies `/api` requests to port 8000. Start the backend before the dashboard; use Retry or refresh if it starts later. Internet is needed to install dependencies, but the running demo uses no external services or remote fonts.
+Open **http://127.0.0.1:5173**. FastAPI documentation is available at **http://127.0.0.1:8000/api/docs**. Vite proxies `/api` requests to port 8000. Start the backend before the dashboard; use Retry or refresh if it starts later. Internet is needed to install dependencies, but the running local demo uses no external services or remote fonts.
 
 ### Verification
 
@@ -212,7 +212,38 @@ This is a collection/review/export workflow, **not automatic online learning**. 
 
 ## Deployment notes
 
-This repository targets a local dissertation demonstration with a real Python backend. `npm run build` creates static assets in `frontend/dist`. For hosted use, deploy FastAPI on a Python-capable service and serve the frontend behind a reverse proxy that forwards `/api` to FastAPI and falls back to `index.html` for client-side routes. Configure origins, HTTPS, authentication, request limits, and monitoring for that environment. Vite's development proxy is not included in static build output. Sites/Worker hosting cannot execute this scikit-learn Python backend directly.
+### Vercel Services with Supabase PostgreSQL
+
+Use `jailbreak-detection-dashboard` as the Vercel project root, containing `vercel.json`. Do not select `frontend` as the project root: both services must be built together.
+
+- `backend`: FastAPI, entrypoint `app.main:app`, public at `/api/*`. The original request path is preserved, matching the API router's `/api` prefix. Swagger, ReDoc and OpenAPI are at `/api/docs`, `/api/redoc`, `/api/openapi.json`.
+- `frontend`: Vite static build, public at all remaining paths. Its scoped rewrite supports React Router deep links such as `/dataset` and `/analyzer`.
+- No service bindings: the browser calls the public same-origin `/api` endpoint; the static frontend has no runtime function. The backend does not call another Vercel service. Do not inject an internal service URL into `VITE_*` variables or build commands. An external database connection is an application secret, not a service binding.
+
+Install frontend/backend dependencies using the setup instructions above. From the project root, test both services together:
+
+```powershell
+npx vercel@latest dev --local --listen 3000
+```
+
+`--local` runs without linking/deploying a Vercel project. Open `http://localhost:3000`, `/dataset`, `/analyzer`, `/api/health` and `/api/docs`. The configured frontend development command selects Vite's `services` mode, disabling the ordinary port-8000 proxy so Vercel owns API routing. `npm run dev` remains the standalone local workflow.
+
+**Database setup before deployment:**
+
+1. In your Supabase project's SQL Editor, run `backend/migrations/001_feedback.sql`. It creates tables in a private `research` schema. Do not add that schema to the Data API exposed schemas.
+2. Open Supabase **Connect → Transaction pooler** and copy the PostgreSQL URI, replacing the password placeholder with your percent-encoded database password.
+3. Add that URI as `DATABASE_URL` in Vercel's backend environment for Production and Preview. Use a separate Supabase project for previews if they must not share production research data. Never prefix this variable with `VITE_` or commit its value. This is a PostgreSQL URI, not a Supabase project HTTPS URL or API key.
+4. Redeploy after environment changes. Test Analyze, saved history after refresh, reviewed labels and CSV export. The adapter opens short-lived TLS connections with prepared statements disabled for transaction-pooler compatibility.
+
+With `DATABASE_URL` set, every successful prediction is persisted in Supabase; reviews and CSV export use the same store. Without it, ordinary local development retains SQLite. Vercel Production/Preview startup fails clearly when the database URL is missing, rather than storing research data on ephemeral disk. A database failure does not silently fall back to SQLite. The migration must be run before predictions; health currently reports API/model availability rather than database connectivity.
+
+Local SQLite history is not automatically copied to Supabase. Confirm separately if existing analyses and reviews should be migrated. Saved records do not automatically retrain models. The supplied dataset CSVs remain separate from interactive history. The API currently has no user authentication: history, review and export are shared endpoints, so restrict deployment access to your dissertation participants before collecting private prompts.
+
+See [Supabase connection guidance](https://supabase.com/docs/guides/database/connecting-to-postgres). A live Supabase round-trip requires your configured database and has not yet been verified.
+
+The supplied research CSV files ship with the backend as read-only data. New datasets or trained artifacts require a new deployment (or a separately implemented external storage loader); the current local artifact paths are not remote upload endpoints. Missing model artifacts retain clearly marked Demo Mode. `.vercelignore` excludes virtual environments, local databases, secrets and test files. Nothing has been deployed by adding this configuration.
+
+References: [Vercel Services](https://vercel.com/docs/services), [routing](https://vercel.com/docs/services/routing), [runtime bindings](https://vercel.com/docs/services/bindings).
 
 ## Screenshots
 

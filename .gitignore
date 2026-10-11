@@ -6,5 +6,8 @@ __pycache__/
 *.pyc
 *.tsbuildinfo
 .env
+.env.*
+!.env.example
+.vercel/
 backend/trained_models/*.pkl
 backend/data/*.sqlite3*

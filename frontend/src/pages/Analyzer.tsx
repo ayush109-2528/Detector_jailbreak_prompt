@@ -83,7 +83,7 @@ export function Analyzer() {
         </DemoNote>
       )}
       <p className="help-text" style={{ marginBottom: 16 }}>
-        Prompt tests and their results are saved locally for reviewed
+        Prompt tests and their results are saved in the configured database for reviewed
         training-data collection.
       </p>
       <div className="analyzer-grid">

@@ -25,7 +25,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     }
     throw new Error(
       detail ||
-        `API request failed (${response.status}). Check that FastAPI is running on port 8000.`,
+        `API request failed (${response.status}). Check the backend service and /api routing.`,
     );
   }
   return response.json();
