@@ -1,4 +1,5 @@
 import json
+import math
 from pathlib import Path
 
 NAMES = ['Logistic Regression', 'Support Vector Machine', 'Random Forest', 'Expert 1', 'Expert 2', 'Expert 3', 'Expert 4', 'Final Ensemble']
@@ -11,12 +12,27 @@ def results(directory: Path):
         if not isinstance(data.get('demo_mode'), bool) or not data.get('evaluation_note'):
             raise ValueError('metrics.json requires demo_mode and evaluation_note')
         required = {'name', 'accuracy', 'precision', 'recall', 'f1', 'roc_auc', 'fpr', 'inference_time_ms', 'confusion_matrix'}
-        if not data.get('models') or any(not required.issubset(m) for m in data['models']):
+        if not isinstance(data.get('models'), list) or not data['models'] or any(not isinstance(m, dict) or not required.issubset(m) for m in data['models']):
             raise ValueError('Invalid model metrics schema')
+        names = set()
         for m in data['models']:
+            if not isinstance(m['name'], str) or not m['name'].strip() or m['name'] in names:
+                raise ValueError('Model names must be nonempty and unique')
+            names.add(m['name'])
             for key in ['accuracy', 'precision', 'recall', 'f1', 'roc_auc', 'fpr']:
-                if m[key] is not None and not 0 <= m[key] <= 1:
+                if key == 'roc_auc' and m[key] is None:
+                    continue
+                if type(m[key]) not in (int, float) or not math.isfinite(m[key]) or not 0 <= m[key] <= 1:
                     raise ValueError('Metrics must be in [0, 1]')
+            timing = m['inference_time_ms']
+            if type(timing) not in (int, float) or not math.isfinite(timing) or timing < 0:
+                raise ValueError('Inference time must be finite and nonnegative')
+            matrix = m['confusion_matrix']
+            if not isinstance(matrix, list) or len(matrix) != 2 or any(
+                not isinstance(row, list) or len(row) != 2 or any(type(n) is not int or n < 0 for n in row)
+                for row in matrix
+            ):
+                raise ValueError('Confusion matrix must be a 2 by 2 array of nonnegative integer counts')
         return data
     models = []
     for i, name in enumerate(NAMES):

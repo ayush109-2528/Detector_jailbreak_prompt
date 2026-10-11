@@ -1920,3 +1920,65 @@ pre {
   height: 520px;
   overflow: auto;
 }
+
+/* Dedicated ensemble inspector: compact cards and readable academic notes. */
+.analyzer-grid > div { min-width: 0; }
+#saved-analysis { width: 100%; max-width: 100%; }
+.source-chips .badge { white-space: normal; overflow-wrap: anywhere; }
+.help-text, .inspected-prompt { overflow-wrap: anywhere; }
+.expert-selector {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin: 24px 0;
+}
+.expert-selector button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  text-align: left;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg);
+  color: inherit;
+}
+.expert-selector button.selected {
+  border-color: #6366f1;
+  box-shadow: inset 0 0 0 1px #6366f1;
+}
+.expert-explanation {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 28px;
+}
+.expert-explanation p {
+  line-height: 1.7;
+}
+.expert-explanation h3 {
+  margin: 12px 0;
+}
+.strategy-explanations dt {
+  font-weight: 600;
+  margin-top: 18px;
+}
+.strategy-explanations dd {
+  margin: 8px 0 0;
+  line-height: 1.7;
+  font-size: 13px;
+  color: var(--muted);
+}
+@media (max-width: 900px) {
+  .expert-selector {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .expert-explanation {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 480px) {
+  .expert-selector {
+    grid-template-columns: 1fr;
+  }
+}

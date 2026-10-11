@@ -6,6 +6,8 @@ class DatasetService:
     def __init__(self, directory: Path):
         explicit = os.getenv('DATASET_FILE')
         candidates = [directory / name for name in (
+            'jailbreak_detection_expanded_direct_source.csv',
+            'jailbreak_detection_verified_only.csv',
             'combined_jailbreak_dataset_balanced.csv',
             'jailbreak_dataset.csv',
             'combined_jailbreak_dataset_full.csv',
@@ -16,6 +18,10 @@ class DatasetService:
         self.filename = selected.name
         # An explicit missing file is an error, never a silent demo fallback.
         self.frame = pd.read_csv(selected, keep_default_na=False)
+        # Keep supplied provenance columns intact; add dashboard aliases.
+        for original, canonical in [('source_dataset', 'source'), ('attack_category', 'category'), ('research_split', 'split')]:
+            if original in self.frame and canonical not in self.frame:
+                self.frame[canonical] = self.frame[original]
         required = {'prompt', 'label', 'class_name', 'source', 'category'}
         if not required.issubset(self.frame.columns):
             raise ValueError(f'Dataset requires columns: {sorted(required)}')
@@ -37,7 +43,9 @@ class DatasetService:
         splits = f['split'].value_counts().to_dict() if actual_splits else {'train': int(n*.7), 'validation': int(n*.15), 'test': n-int(n*.7)-int(n*.15)}
         return {'total': n, 'benign': int((f.label == 0).sum()), 'jailbreak': int((f.label == 1).sum()),
                 'demo_mode': self.demo_mode, 'dataset_file': self.filename, 'splits': splits, 'split_status': 'recorded' if actual_splits else 'planned',
-                'sources': counts('source'), 'categories': counts('category'), 'class_distribution': counts('class_name')}
+                'sources': counts('source'), 'categories': counts('category'), 'class_distribution': counts('class_name'),
+                'jailbreak_categories': [{'name': str(k), 'value': int(v)} for k, v in f.loc[f.label == 1, 'category'].value_counts().items()],
+                'verification': counts('verification_status') if 'verification_status' in f else []}
 
     def samples(self, page, page_size, search, label, source, category):
         f = self.frame

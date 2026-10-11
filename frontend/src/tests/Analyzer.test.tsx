@@ -92,9 +92,7 @@ describe("live analyzer", () => {
       target: { value: "maximum_confidence" },
     });
     fireEvent.change(screen.getByRole("slider"), { target: { value: "0.95" } });
-    fireEvent.click(
-      screen.getByRole("button", { name: "Analyze prompt" }),
-    );
+    fireEvent.click(screen.getByRole("button", { name: "Analyze prompt" }));
     expect(api.predict).toHaveBeenCalledWith(
       "test",
       "maximum_confidence",
@@ -112,9 +110,7 @@ describe("live analyzer", () => {
     fireEvent.change(screen.getByRole("textbox"), {
       target: { value: "test" },
     });
-    fireEvent.click(
-      screen.getByRole("button", { name: "Analyze prompt" }),
-    );
+    fireEvent.click(screen.getByRole("button", { name: "Analyze prompt" }));
     await finish();
     fireEvent.change(screen.getByRole("textbox"), {
       target: { value: "another prompt" },
@@ -127,9 +123,7 @@ describe("live analyzer", () => {
     fireEvent.change(screen.getByRole("textbox"), {
       target: { value: "test" },
     });
-    fireEvent.click(
-      screen.getByRole("button", { name: "Analyze prompt" }),
-    );
+    fireEvent.click(screen.getByRole("button", { name: "Analyze prompt" }));
     await finish();
     expect(screen.getByText("Inference unavailable")).toBeVisible();
     expect(

@@ -73,16 +73,19 @@ export function Donut({
   );
 }
 function DistributionChartView({ data }: { data: Distribution[] }) {
+  const horizontal = data.length > 2;
   return (
-    <ResponsiveContainer width="100%" height={230}>
-      <BarChart data={data} margin={{ bottom: 25, left: -20, right: 10 }}>
+    <ResponsiveContainer width="100%" height={horizontal ? Math.max(230, data.length * 42) : 230}>
+      <BarChart data={data} layout={horizontal ? "vertical" : "horizontal"} margin={{ bottom: 25, left: horizontal ? 0 : -20, right: 10 }}>
         <CartesianGrid
           vertical={false}
           stroke="var(--border)"
           strokeDasharray="3 3"
         />
         <XAxis
-          dataKey="name"
+          dataKey={horizontal ? undefined : "name"}
+          type={horizontal ? "number" : "category"}
+          allowDecimals={false}
           tick={{ fontSize: 10, fill: "var(--muted)" }}
           interval={0}
           tickFormatter={(s) => String(s).replaceAll("_", " ")}
@@ -90,6 +93,11 @@ function DistributionChartView({ data }: { data: Distribution[] }) {
           tickLine={false}
         />
         <YAxis
+          type={horizontal ? "category" : "number"}
+          dataKey={horizontal ? "name" : undefined}
+          width={horizontal ? 125 : 60}
+          interval={0}
+          tickFormatter={horizontal ? (s) => { const label = String(s).replaceAll("_", " "); return label.length > 19 ? `${label.slice(0, 18)}…` : label; } : undefined}
           allowDecimals={false}
           tick={{ fontSize: 11, fill: "var(--muted)" }}
           axisLine={false}
@@ -99,7 +107,7 @@ function DistributionChartView({ data }: { data: Distribution[] }) {
         <Bar
           dataKey="value"
           name="Samples"
-          radius={[5, 5, 0, 0]}
+          radius={horizontal ? [0, 5, 5, 0] : [5, 5, 0, 0]}
           maxBarSize={65}
         >
           {data.map((d, i) => (

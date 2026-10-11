@@ -24,7 +24,7 @@ import {
 } from "../components/UI";
 import { Donut, ModelChart } from "../charts/ResearchCharts";
 export function Dashboard() {
-  const { stats, metrics, recent } = useResearch();
+  const { stats, metrics, recent, health } = useResearch();
   if (stats.error || metrics.error)
     return (
       <ErrorBox
@@ -98,7 +98,7 @@ export function Dashboard() {
         <Stat
           label="Expert models"
           value="04"
-          note="Specialized pattern detectors"
+          note={health.data?.demo_mode ? "Four simulated expert roles" : "Four loaded expert classifiers"}
           icon={<Layers size={18} />}
         />
         <Stat

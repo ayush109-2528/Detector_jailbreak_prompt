@@ -4,6 +4,19 @@ export interface Expert {
   score: number;
   prediction: string;
 }
+export interface ExpertCatalog {
+  demo_mode: boolean;
+  mode_note: string;
+  experts: {
+    name: string;
+    category: string;
+    weight: number;
+    purpose: string;
+    demo_patterns: string[];
+    artifact: string;
+    estimator: string;
+  }[];
+}
 export type Strategy =
   | "weighted_average"
   | "average_probability"
@@ -43,6 +56,10 @@ export interface Metrics {
   models: ModelMetric[];
 }
 export interface Sample {
+  record_id?: string;
+  split?: string;
+  verification_status?: string;
+  license?: string;
   id: number;
   prompt: string;
   label: number;
@@ -55,6 +72,8 @@ export interface Distribution {
   value: number;
 }
 export interface Stats {
+  verification?: Distribution[];
+  jailbreak_categories?: Distribution[];
   dataset_file?: string;
   total: number;
   benign: number;

@@ -43,9 +43,7 @@ describe("training feedback", () => {
     fireEvent.click(screen.getByRole("button", { name: "Next" }));
     expect(screen.getByRole("table")).toBe(table);
     expect(screen.getByText("Explain cloud computing.")).toBeVisible();
-    expect(
-      screen.getByRole("button", { name: "Next" }),
-    ).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Next" })).toBeDisabled();
     await act(async () => done(history));
     expect(screen.getByRole("table")).toBe(table);
   });

@@ -13,7 +13,11 @@ function useResearchState() {
     health,
     recent,
     latest: recent[0],
-    reconnect: () => { stats.reload(); metrics.reload(); health.reload(); },
+    reconnect: () => {
+      stats.reload();
+      metrics.reload();
+      health.reload();
+    },
     save: (result: Prediction) =>
       setRecent((items) => [result, ...items].slice(0, 20)),
   };

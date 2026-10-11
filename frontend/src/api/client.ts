@@ -1,4 +1,11 @@
-import type { Metrics, Prediction, Sample, Stats, Strategy } from "../types";
+import type {
+  ExpertCatalog,
+  Metrics,
+  Prediction,
+  Sample,
+  Stats,
+  Strategy,
+} from "../types";
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`/api${path}`, {
     ...init,
@@ -24,6 +31,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   return response.json();
 }
 export const api = {
+  experts: () => request<ExpertCatalog>("/experts"),
   feedback: (page: number) =>
     request<{
       items: (Prediction & {

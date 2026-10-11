@@ -227,3 +227,28 @@ Dataset and saved-analysis tables retain content during background requests, pre
 ## Dissertation disclaimer
 
 Academic research and visualization prototype only. Demo Data and simulated outputs are not experimental findings, validated security assurances, or production guardrail guarantees. Actual dissertation conclusions must be based on documented, reproducible model training and held-out evaluation.
+
+## Supplied research collections and expert inspector
+
+The two supplied CSV files are preserved unchanged in `backend/data`:
+
+- `jailbreak_detection_expanded_direct_source.csv`: active default, 1,015 rows (640 labeled jailbreak / 375 benign); recorded splits 795 train / 107 validation / 113 test.
+- `jailbreak_detection_verified_only.csv`: 695 rows, all included in the expanded collection. It is retained as an alternative; the two files are **not concatenated**.
+
+An independent local NFKC/lowercase/whitespace normalization check found no repeated prompts within either file and 695 overlapping prompts. Source verification statuses are author-supplied metadata, not independent verification by this application. The expanded collection contains 695 rows marked verified and 320 marked not reverified in that pass. Harmful-behavior/proxy categories are not necessarily explicit jailbreak attempts; audit labels, category coverage and evaluation scope before training. These files are not the larger combined/balanced downloads mentioned earlier.
+
+CSV columns `source_dataset`, `attack_category`, and `research_split` are automatically mapped to `source`, `category`, and `split`, preserving the original columns and all provenance. The explorer exposes per-record ID, split, verification status and license. Dataset ingestion alone changes neither trained model artifacts nor evaluation metrics.
+
+To use the verified subset or a future collection, place the CSV in `backend/data` and start the API from `backend` with an explicit absolute path:
+
+```powershell
+$env:DATASET_FILE = (Resolve-Path 'data/jailbreak_detection_verified_only.csv').Path
+.\.venv\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8000
+```
+
+Restart the API after changing the CSV or configuration; refresh the dashboard to reload dataset statistics. No files are silently appended, no source is silently deduplicated, and importing additional rows does not automatically retrain models. `DATASET_FILE` overrides automatic selection. Without it, the expanded file is preferred, then verified-only, then the earlier balanced / jailbreak_dataset / full filenames; synthetic data remains the final fallback.
+
+`/analyzer` is the interactive prediction workspace. `/ensemble` is now a separate read-only explanation and inspection page: four selectable expert cards, actual implementation names, intended specialist roles, current demo rules, default weights, saved scores/contributions, decision flow, strategy explanations and the training requirements for genuine specialization. It retrieves recent saved analyses after a page reload. `GET /api/experts` supplies the catalog directly from the predictor.
+
+Default expert roles and weights: instruction override 30%, roleplay 20%, adversarial suffix 20%, general jailbreak 30%. Roles do not prescribe different algorithms: the trained estimator class is read from each loaded artifact. In Demo Mode, each distinct matching substring contributes 0.34 to a 0.12 baseline, capped at 0.96. These simulated scores are not calibrated probabilities. Artifact loading requires all four trusted classifiers and a compatible shared vectorizer.
+

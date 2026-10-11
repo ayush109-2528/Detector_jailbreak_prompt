@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Card, PageIntro, Badge, DemoNote } from "../components/UI";
 import { EnsembleFlow } from "../components/EnsembleFlow";
+import { useResearch } from "../hooks/ResearchContext";
 const stages = [
   [
     "Dataset collection",
@@ -77,6 +78,11 @@ const stages = [
 ];
 export function TrainingPipeline() {
   const [selected, setSelected] = useState(0);
+  const { stats } = useResearch();
+  const recorded = stats.data?.split_status === "recorded";
+  const outputFor = (i: number) => i === 4 && recorded
+    ? `Recorded CSV split: ${stats.data?.splits.train ?? 0} train / ${stats.data?.splits.validation ?? 0} validation / ${stats.data?.splits.test ?? 0} test`
+    : stages[i][3];
   return (
     <>
       <PageIntro
@@ -91,15 +97,16 @@ export function TrainingPipeline() {
       </DemoNote>
       <div className="pipeline-page">
         <div className="stage-grid">
-          {stages.map(([title, description, input, output], i) => (
+          {stages.map(([title, description, input], i) => (
             <button
               key={title}
               className={`stage-card ${i === selected ? "selected" : ""}`}
               onClick={() => setSelected(i)}
+              aria-pressed={i === selected}
             >
               <div className="stage-head">
                 <span>{String(i + 1).padStart(2, "0")}</span>
-                <Badge tone="neutral">Planned</Badge>
+                <Badge tone="neutral">{i === 4 && recorded ? "Recorded in CSV" : "Planned"}</Badge>
               </div>
               <h3>{title}</h3>
               <p>{description}</p>
@@ -107,7 +114,7 @@ export function TrainingPipeline() {
                 <small>INPUT</small>
                 <span>{input}</span>
                 <small>OUTPUT</small>
-                <span>{output}</span>
+                <span>{outputFor(i)}</span>
               </div>
             </button>
           ))}
@@ -121,7 +128,8 @@ export function TrainingPipeline() {
               <b>Input</b>
               <p>{stages[selected][2]}</p>
               <b>Output</b>
-              <p>{stages[selected][3]}</p>
+              <p>{outputFor(selected)}</p>
+              {selected === 4 && recorded && <p className="help-text">These are imported assignments, not evidence of completed training or a leakage-free evaluation.</p>}
             </div>
           </Card>
           <Card

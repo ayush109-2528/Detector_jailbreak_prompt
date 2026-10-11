@@ -47,7 +47,7 @@ export function Layout() {
   return (
     <div className={`app ${dark ? "dark" : ""}`}>
       <aside className={`sidebar ${open ? "is-open" : ""}`}>
-        <Link className="brand" to="/">
+        <Link className="brand" to="/" onClick={() => setOpen(false)}>
           <div className="brand-icon">
             <ShieldCheck size={27} />
           </div>
@@ -88,7 +88,7 @@ export function Layout() {
               Stronger guardrails.
             </h3>
             <p>Exploring lightweight experts for safer language models.</p>
-            <Link to="/research">
+            <Link to="/research" onClick={() => setOpen(false)}>
               About the research <ArrowUpRight size={15} />
             </Link>
           </div>
@@ -113,6 +113,7 @@ export function Layout() {
             <button
               className="icon-button menu-button"
               aria-label="Open navigation"
+              aria-expanded={open}
               onClick={() => setOpen(!open)}
             >
               <Menu size={20} />
@@ -122,7 +123,11 @@ export function Layout() {
             <b>{nav.find((n) => n[0] === location.pathname)?.[1] || "Page"}</b>
           </div>
           <div className="header-actions">
-            {health.error && <button className="button secondary" onClick={reconnect}>Reconnect</button>}
+            {health.error && (
+              <button className="button secondary" onClick={reconnect}>
+                Reconnect
+              </button>
+            )}
             <span className="system-state">
               <i className={health.error ? "offline" : "live-dot"} />
               {health.error

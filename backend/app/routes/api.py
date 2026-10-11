@@ -6,6 +6,10 @@ from fastapi.responses import Response
 
 router = APIRouter(prefix='/api')
 
+@router.get('/experts')
+def experts(request: Request):
+    return request.app.state.predictor.catalog()
+
 @router.get('/health')
 def health(request: Request):
     p = request.app.state.predictor
@@ -22,7 +26,10 @@ def samples(request: Request, page: int = Query(1, ge=1), page_size: int = Query
 @router.get('/models')
 @router.get('/models/metrics')
 def metrics(request: Request):
-    return results(request.app.state.model_dir)
+    try:
+        return results(request.app.state.model_dir)
+    except (ValueError, TypeError, AttributeError, OSError) as exc:
+        raise HTTPException(status_code=503, detail='Evaluation metrics could not be loaded. Check metrics.json values, provenance, timing, and 2 by 2 confusion matrices.') from exc
 
 @router.post('/predict')
 @router.post('/predict/detailed')

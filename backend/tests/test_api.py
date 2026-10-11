@@ -1,4 +1,6 @@
 import json
+from pathlib import Path
+import shutil
 import joblib
 import pytest
 from fastapi.testclient import TestClient
@@ -14,13 +16,17 @@ from app.services.results import results
 
 @pytest.fixture
 def client(monkeypatch, tmp_path):
+    # API fixtures stay synthetic regardless of the user's active collection.
+    shutil.copy(Path(__file__).resolve().parents[1] / 'data' / 'demo_dataset.csv', tmp_path / 'demo_dataset.csv')
+    monkeypatch.setenv('DATA_DIR', str(tmp_path))
+    monkeypatch.delenv('DATASET_FILE', raising=False)
     monkeypatch.setenv('MODEL_DIR', str(tmp_path))
     monkeypatch.setenv('FEEDBACK_DB', str(tmp_path / 'feedback.sqlite3'))
     with TestClient(app) as client:
         yield client
 
 def test_read_endpoints_and_provenance(client):
-    for path in ['/health', '/dataset/stats', '/dataset/samples', '/models', '/models/metrics']:
+    for path in ['/health', '/dataset/stats', '/dataset/samples', '/models', '/models/metrics', '/experts']:
         response = client.get('/api' + path)
         assert response.status_code == 200
         assert response.json()['demo_mode'] is True

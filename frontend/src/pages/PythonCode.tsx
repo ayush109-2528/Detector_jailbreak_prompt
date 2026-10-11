@@ -89,8 +89,8 @@ export function PythonCode() {
       />
       <DemoNote>
         These code snippets are displayed only to explain the machine-learning
-        workflow used in the research prototype. The complete training and
-        backend implementation is maintained separately.
+        workflow proposed for the research prototype. Backend inference code is
+        maintained separately; a complete research training script has not yet been implemented.
       </DemoNote>
       {copied === "unavailable" && (
         <p role="status">

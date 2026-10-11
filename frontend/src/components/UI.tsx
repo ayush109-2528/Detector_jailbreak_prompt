@@ -94,6 +94,9 @@ export function Stat({
   );
 }
 const definitions: Record<string, string> = {
+  Accuracy: "The fraction of all evaluated prompts assigned the correct class.",
+  "ROC-AUC": "Area under the receiver operating characteristic curve: how well scores rank jailbreak prompts above benign prompts across decision thresholds.",
+  "Inference Time": "Measured computation time per prompt. Hardware, batch size, and which processing stages are timed must be documented.",
   "TF-IDF":
     "Term frequency–inverse document frequency weights words by how distinctive they are across documents.",
   "N-gram":

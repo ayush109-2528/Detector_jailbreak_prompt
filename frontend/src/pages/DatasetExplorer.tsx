@@ -32,7 +32,10 @@ export function DatasetExplorer() {
   const s = stats.data;
   const displayedPage = rows.data?.page ?? page;
   const attackCategories = useMemo(
-    () => s?.categories.filter((c) => c.name !== "benign") ?? [],
+    () =>
+      s?.jailbreak_categories ??
+      s?.categories.filter((c) => !c.name.startsWith("benign")) ??
+      [],
     [s],
   );
   function change(set: (v: string) => void, v: string) {
@@ -44,7 +47,7 @@ export function DatasetExplorer() {
       <PageIntro
         eyebrow="DATA & PROVENANCE"
         title="Dataset explorer"
-        description="Know what the models learn from. Inspect labels, sources, and attack categories."
+        description="Inspect candidate training data: labels, sources, and attack categories. Importing a dataset does not train the models."
         action={
           <Badge tone="neutral">
             <Database size={13} /> CSV-ready dataset
@@ -62,6 +65,26 @@ export function DatasetExplorer() {
         <p className="help-text" style={{ marginBottom: 16 }}>
           Loaded dataset: <strong>{s.dataset_file}</strong>
         </p>
+      )}
+      {!!s?.verification?.length && (
+        <Card
+          title="Imported dataset provenance"
+          subtitle="Verification statuses are supplied by the CSV author; this application has not independently verified the sources."
+        >
+          <div className="source-chips">
+            {s.verification.map((v) => (
+              <Badge tone="neutral" key={v.name}>
+                {v.value} · {v.name.replaceAll("_", " ")}
+              </Badge>
+            ))}
+          </div>
+          <p className="help-text">
+            Labels and recorded train / validation / test splits are preserved.
+            Harmful-behavior and proxy examples are not necessarily explicit
+            jailbreak attempts; evaluate those categories separately. Importing
+            data does not train the experts or replace Demo Data metrics.
+          </p>
+        </Card>
       )}
       {s && (
         <>
@@ -171,7 +194,21 @@ export function DatasetExplorer() {
                   {rows.data?.items.map((r) => (
                     <tr key={r.id}>
                       <td className="mono">{String(r.id).padStart(3, "0")}</td>
-                      <td className="prompt-cell">{r.prompt}</td>
+                      <td className="prompt-cell">
+                        {r.prompt}
+                        {r.verification_status && (
+                          <details>
+                            <summary>Record provenance</summary>
+                            <p className="help-text">
+                              ID: {r.record_id} · Split: {r.split}
+                              <br />
+                              Verification: {r.verification_status}
+                              <br />
+                              License: {r.license || "Not supplied"}
+                            </p>
+                          </details>
+                        )}
+                      </td>
                       <td>{r.label}</td>
                       <td>
                         <Badge tone={r.label ? "red" : "green"}>
@@ -223,7 +260,7 @@ export function DatasetExplorer() {
       </Card>
       <Card
         title="Research Dataset Sources"
-        subtitle="Potential external sources to evaluate, license, curate, and document before use."
+        subtitle="Research sources to document and audit; the loaded CSV supplies each record's provenance."
       >
         <div className="source-chips">
           {[
@@ -240,10 +277,13 @@ export function DatasetExplorer() {
           ))}
         </div>
         <p className="help-text">
-          These names identify potential research sources. The bundled synthetic
-          data does not claim provenance from them. Replace
-          backend/data/jailbreak_dataset.csv with your curated dataset and
-          restart the API.
+          These names identify research sources; the loaded file records the
+          provenance of each prompt. To add a future CSV, place it in
+          backend/data, set DATASET_FILE to its absolute path, and restart the
+          API. Both source/category/split and
+          source_dataset/attack_category/research_split column names are
+          supported. Files are not automatically merged, so overlapping
+          collections are not counted twice.
         </p>
       </Card>
     </>

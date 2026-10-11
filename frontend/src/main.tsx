@@ -8,6 +8,7 @@ import { DatasetExplorer } from "./pages/DatasetExplorer";
 import { TrainingPipeline } from "./pages/TrainingPipeline";
 import { ModelComparison } from "./pages/ModelComparison";
 import { Analyzer } from "./pages/Analyzer";
+import { Ensemble } from "./pages/Ensemble";
 import { PythonCode } from "./pages/PythonCode";
 import { ResearchInfo } from "./pages/ResearchInfo";
 import "./styles.css";
@@ -22,10 +23,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             <Route path="pipeline" element={<TrainingPipeline />} />
             <Route path="models" element={<ModelComparison />} />
             <Route path="analyzer" element={<Analyzer key="analyzer" />} />
-            <Route
-              path="ensemble"
-              element={<Analyzer key="ensemble" ensemblePage />}
-            />
+            <Route path="ensemble" element={<Ensemble />} />
             <Route path="code" element={<PythonCode />} />
             <Route path="research" element={<ResearchInfo />} />
             <Route

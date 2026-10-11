@@ -27,19 +27,14 @@ export const strategies: Record<Strategy, string> = {
   majority_voting: "Majority voting",
   maximum_confidence: "Maximum expert confidence",
 };
-export function Analyzer({ ensemblePage = false }: { ensemblePage?: boolean }) {
-  const { save, latest, health } = useResearch();
-  const initial = ensemblePage ? latest : undefined;
-  const [prompt, setPrompt] = useState(initial?.prompt || "");
-  const [strategy, setStrategy] = useState<Strategy>(
-    initial?.strategy || "weighted_average",
-  );
-  const [threshold, setThreshold] = useState(initial?.threshold ?? 0.5);
+export function Analyzer() {
+  const { save, health } = useResearch();
+  const [prompt, setPrompt] = useState("");
+  const [strategy, setStrategy] = useState<Strategy>("weighted_average");
+  const [threshold, setThreshold] = useState(0.5);
   const [busy, setBusy] = useState(false);
-  const [stage, setStage] = useState(initial ? 7 : -1);
-  const [result, setResult] = useState<Prediction | undefined>(
-    ensemblePage ? latest : undefined,
-  );
+  const [stage, setStage] = useState(-1);
+  const [result, setResult] = useState<Prediction | undefined>();
   const [error, setError] = useState("");
   const [dirty, setDirty] = useState(false);
   async function analyze() {
@@ -75,19 +70,9 @@ export function Analyzer({ ensemblePage = false }: { ensemblePage?: boolean }) {
   return (
     <>
       <PageIntro
-        eyebrow={
-          ensemblePage ? "INSIDE THE DECISION" : "INTERACTIVE EXPERIMENT"
-        }
-        title={
-          ensemblePage
-            ? "One prompt. Four perspectives."
-            : "Live prompt analyzer"
-        }
-        description={
-          ensemblePage
-            ? "Follow the signal through each expert and inspect the ensemble decision."
-            : "Enter a prompt and explore how lightweight experts classify it."
-        }
+        eyebrow="INTERACTIVE EXPERIMENT"
+        title="Live prompt analyzer"
+        description="Enter a prompt and explore how lightweight experts classify it."
         action={<Badge tone="neutral">No LLM calls · Classical ML</Badge>}
       />
       {health.data?.demo_mode && (
@@ -101,11 +86,7 @@ export function Analyzer({ ensemblePage = false }: { ensemblePage?: boolean }) {
         Prompt tests and their results are saved locally for reviewed
         training-data collection.
       </p>
-      <div
-        className={
-          ensemblePage ? "analyzer-grid ensemble-layout" : "analyzer-grid"
-        }
-      >
+      <div className="analyzer-grid">
         <div>
           <Card
             title="Test a prompt"
@@ -328,12 +309,10 @@ export function Analyzer({ ensemblePage = false }: { ensemblePage?: boolean }) {
               </section>
             )}
           </div>
-          {!ensemblePage && (
-            <Link className="ensemble-link" to="/ensemble">
-              Inspect in <Term name="Ensemble" /> visualization{" "}
-              <ArrowUpRight size={16} />
-            </Link>
-          )}
+          <Link className="ensemble-link" to="/ensemble">
+            Inspect in <Term name="Ensemble" /> visualization{" "}
+            <ArrowUpRight size={16} />
+          </Link>
         </div>
       </div>
       <TrainingFeedback revision={result?.analysis_id} />

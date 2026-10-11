@@ -10,6 +10,16 @@ EXPERTS = [('Instruction Override Expert', 'instruction_override', 'instruction'
            ('Adversarial Suffix Expert', 'adversarial_suffix', 'suffix'),
            ('General Jailbreak Expert', 'general', 'general')]
 WEIGHTS = [.3, .2, .2, .3]
+DEMO_PATTERNS = [('ignore', 'override', 'previous instructions', 'disregard'),
+                 ('pretend', 'roleplay', 'act as', 'unrestricted'),
+                 ('!!!', 'suffix', '###', 'decode'),
+                 ('bypass', 'jailbreak', 'no restrictions', 'ignore')]
+PURPOSES = [
+    'Detect attempts to replace or disregard existing instructions.',
+    'Detect persona or role-playing requests used to evade restrictions. Ordinary role-play can be benign.',
+    'Detect adversarial additions, obfuscated fragments, or suffix patterns. Punctuation alone is not proof of an attack.',
+    'Detect broader jailbreak language and patterns that overlap the specialist categories.',
+]
 
 class Predictor:
     def __init__(self, directory: Path):
@@ -29,15 +39,19 @@ class Predictor:
             except Exception:
                 self.reason = 'Artifacts failed validation. Demo Mode is active; check model compatibility.'
 
+    def catalog(self):
+        return {'demo_mode': self.demo_mode, 'mode_note': self.reason,
+                'experts': [{'name': e[0], 'category': e[1], 'weight': WEIGHTS[i],
+                             'purpose': PURPOSES[i], 'demo_patterns': list(DEMO_PATTERNS[i]),
+                             'artifact': f'expert_{e[2]}.pkl',
+                             'estimator': 'Simulated text-pattern scorer' if self.demo_mode else type(self.experts[i].estimator).__name__}
+                            for i, e in enumerate(EXPERTS)]}
+
     def predict(self, prompt, strategy='weighted_average', threshold=.5):
         start = perf_counter()
         normalized = preprocess(prompt)
         if self.demo_mode:
-            patterns = [('ignore', 'override', 'previous instructions', 'disregard'),
-                        ('pretend', 'roleplay', 'act as', 'unrestricted'),
-                        ('!!!', 'suffix', '###', 'decode'),
-                        ('bypass', 'jailbreak', 'no restrictions', 'ignore')]
-            scores = [min(.96, .12 + .34 * sum(word in normalized for word in terms)) for terms in patterns]
+            scores = [min(.96, .12 + .34 * sum(word in normalized for word in terms)) for terms in DEMO_PATTERNS]
         else:
             features = self.vectorizer.transform([normalized])
             scores = [expert.score(features) for expert in self.experts]
