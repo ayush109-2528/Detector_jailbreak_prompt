@@ -75,8 +75,15 @@ export function Donut({
 function DistributionChartView({ data }: { data: Distribution[] }) {
   const horizontal = data.length > 2;
   return (
-    <ResponsiveContainer width="100%" height={horizontal ? Math.max(230, data.length * 42) : 230}>
-      <BarChart data={data} layout={horizontal ? "vertical" : "horizontal"} margin={{ bottom: 25, left: horizontal ? 0 : -20, right: 10 }}>
+    <ResponsiveContainer
+      width="100%"
+      height={horizontal ? Math.max(230, data.length * 42) : 230}
+    >
+      <BarChart
+        data={data}
+        layout={horizontal ? "vertical" : "horizontal"}
+        margin={{ bottom: 25, left: horizontal ? 0 : -20, right: 10 }}
+      >
         <CartesianGrid
           vertical={false}
           stroke="var(--border)"
@@ -97,7 +104,14 @@ function DistributionChartView({ data }: { data: Distribution[] }) {
           dataKey={horizontal ? "name" : undefined}
           width={horizontal ? 125 : 60}
           interval={0}
-          tickFormatter={horizontal ? (s) => { const label = String(s).replaceAll("_", " "); return label.length > 19 ? `${label.slice(0, 18)}…` : label; } : undefined}
+          tickFormatter={
+            horizontal
+              ? (s) => {
+                  const label = String(s).replaceAll("_", " ");
+                  return label.length > 19 ? `${label.slice(0, 18)}…` : label;
+                }
+              : undefined
+          }
           allowDecimals={false}
           tick={{ fontSize: 11, fill: "var(--muted)" }}
           axisLine={false}

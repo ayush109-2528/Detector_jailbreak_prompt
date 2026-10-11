@@ -1922,10 +1922,21 @@ pre {
 }
 
 /* Dedicated ensemble inspector: compact cards and readable academic notes. */
-.analyzer-grid > div { min-width: 0; }
-#saved-analysis { width: 100%; max-width: 100%; }
-.source-chips .badge { white-space: normal; overflow-wrap: anywhere; }
-.help-text, .inspected-prompt { overflow-wrap: anywhere; }
+.analyzer-grid > div {
+  min-width: 0;
+}
+#saved-analysis {
+  width: 100%;
+  max-width: 100%;
+}
+.source-chips .badge {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.help-text,
+.inspected-prompt {
+  overflow-wrap: anywhere;
+}
 .expert-selector {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));

@@ -98,7 +98,11 @@ export function Dashboard() {
         <Stat
           label="Expert models"
           value="04"
-          note={health.data?.demo_mode ? "Four simulated expert roles" : "Four loaded expert classifiers"}
+          note={
+            health.data?.demo_mode
+              ? "Four simulated expert roles"
+              : "Four loaded expert classifiers"
+          }
           icon={<Layers size={18} />}
         />
         <Stat

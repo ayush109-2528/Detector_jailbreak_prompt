@@ -31,10 +31,10 @@ export function ResearchInfo() {
         </Card>
         <Card title="Research approach" action={<FlaskConical size={22} />}>
           <p className="body-copy">
-            The proposed trained system uses specialized classifiers to learn different jailbreak patterns.
-            Their probability estimates would be combined into a single
-            benign/jailbreak decision. The system uses classical ML, NLP feature
-            extraction, and ensemble decision-making.
+            The proposed trained system uses specialized classifiers to learn
+            different jailbreak patterns. Their probability estimates would be
+            combined into a single benign/jailbreak decision. The system uses
+            classical ML, NLP feature extraction, and ensemble decision-making.
           </p>
         </Card>
       </div>

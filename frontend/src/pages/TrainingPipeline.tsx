@@ -80,9 +80,10 @@ export function TrainingPipeline() {
   const [selected, setSelected] = useState(0);
   const { stats } = useResearch();
   const recorded = stats.data?.split_status === "recorded";
-  const outputFor = (i: number) => i === 4 && recorded
-    ? `Recorded CSV split: ${stats.data?.splits.train ?? 0} train / ${stats.data?.splits.validation ?? 0} validation / ${stats.data?.splits.test ?? 0} test`
-    : stages[i][3];
+  const outputFor = (i: number) =>
+    i === 4 && recorded
+      ? `Recorded CSV split: ${stats.data?.splits.train ?? 0} train / ${stats.data?.splits.validation ?? 0} validation / ${stats.data?.splits.test ?? 0} test`
+      : stages[i][3];
   return (
     <>
       <PageIntro
@@ -106,7 +107,9 @@ export function TrainingPipeline() {
             >
               <div className="stage-head">
                 <span>{String(i + 1).padStart(2, "0")}</span>
-                <Badge tone="neutral">{i === 4 && recorded ? "Recorded in CSV" : "Planned"}</Badge>
+                <Badge tone="neutral">
+                  {i === 4 && recorded ? "Recorded in CSV" : "Planned"}
+                </Badge>
               </div>
               <h3>{title}</h3>
               <p>{description}</p>
@@ -129,7 +132,12 @@ export function TrainingPipeline() {
               <p>{stages[selected][2]}</p>
               <b>Output</b>
               <p>{outputFor(selected)}</p>
-              {selected === 4 && recorded && <p className="help-text">These are imported assignments, not evidence of completed training or a leakage-free evaluation.</p>}
+              {selected === 4 && recorded && (
+                <p className="help-text">
+                  These are imported assignments, not evidence of completed
+                  training or a leakage-free evaluation.
+                </p>
+              )}
             </div>
           </Card>
           <Card

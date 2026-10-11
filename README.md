@@ -11,16 +11,16 @@ A full-stack M.Tech dissertation prototype for explaining a lightweight, classic
 - Training pipeline: 12 selectable stages with explanations, input/output, and conceptual flow. Stages are planned; the UI does not launch training.
 - Model comparison: all seven requested metrics, grouped bars, latency and AUC charts, and eight confusion matrices.
 - Live analyzer: text input, example prompts, progress illustration, four expert scores, strategy and threshold controls, final allow/block decision, and calculation inspector.
-- Ensemble visualization: shared last result plus another input form for live demonstrations.
+- Ensemble visualization: a separate read-only inspector with selectable expert explanations, saved results, weights, strategies and decision flow.
 - Python code: syntax-highlighted educational excerpts and copy controls; no backend source is served.
 - Research information: title, objective, problem, workflow, evaluation definitions, and scope.
 - Responsive light/dark layout, keyboard focus states, reduced-motion support, error/retry and empty states.
 
 ## Research integrity
 
-The initial dataset contains **24 synthetic demonstration prompts** (12 benign, 12 jailbreak). None is represented as being collected from the external research sources listed in the UI. Initial performance values are **Demo Data** from a fictional 200-sample evaluation set, unrelated to those 24 rows.
+The active default is the supplied expanded CSV with **1,015 records**. The verified-only file is preserved as an alternative subset. Both retain author-supplied provenance; this application has not independently verified their sources. A fallback dataset contains 24 synthetic demonstration prompts. Performance values remain **Demo Data** from a fictional 200-sample evaluation set, unrelated to the imported collection.
 
-Without a valid complete artifact bundle, inference uses deterministic keyword-based **simulated probabilities**. It does not secretly train a classifier, call an LLM, or claim actual TF-IDF inference. The animated sequence explains the intended architecture; it is not a execution trace or latency benchmark. Returned computation time is measured separately and, in demo mode, measures only the simulation.
+Without a valid complete artifact bundle, inference uses deterministic keyword-based **simulated scores**, not calibrated probabilities. It does not secretly train a classifier, call an LLM, or claim actual TF-IDF inference. The animated sequence explains the intended architecture; it is not an execution trace or latency benchmark. Returned computation time is measured separately and, in demo mode, measures only the simulation.
 
 Model inference mode, dataset provenance, and evaluation provenance are independent. Loading a CSV does not make simulated predictions trained; loading models does not make demonstration metrics real. Every relevant screen preserves those distinctions. Allow/block is a displayed research decision, not an enforced downstream guardrail.
 
@@ -124,7 +124,7 @@ Required columns: `prompt,label,class_name,source,category`. Labels must be 0 or
 
 An optional `split` column can contain `train`, `validation`, or `test`. If absent, the UI shows **planned** 70/15/15 counts only; no actual split or training is performed. The synthetic fallback is used only when the real CSV is absent. Invalid real CSVs fail startup instead of silently displaying mock data.
 
-The backend also recognizes `combined_jailbreak_dataset_balanced.csv` and `combined_jailbreak_dataset_full.csv` in `backend/data/`. Selection order is explicit `DATASET_FILE` environment path, balanced CSV, `jailbreak_dataset.csv`, full CSV, then demo fallback. The summary CSV is metadata and is never loaded as prompt records. The loaded filename appears on Dataset Explorer. An explicitly configured missing file fails startup rather than silently using demo data.
+The backend also recognizes `combined_jailbreak_dataset_balanced.csv` and `combined_jailbreak_dataset_full.csv` in `backend/data/`. Selection order is explicit `DATASET_FILE` environment path, supplied expanded CSV, supplied verified-only CSV, balanced CSV, `jailbreak_dataset.csv`, full CSV, then demo fallback. The summary CSV is metadata and is never loaded as prompt records. The loaded filename appears on Dataset Explorer. An explicitly configured missing file fails startup rather than silently using demo data.
 
 The user-provided `build_full_jailbreak_dataset.py` is not bundled in this repository. Once you supply that script and review its configured sources, run its dependency installation and download commands in an internet-enabled environment, then place the generated files in `backend/data/`. Do not infer research provenance or model effectiveness from the filenames. A balanced training set may be useful for an initial experiment; evaluate separately on a representative held-out distribution and prevent duplicate/source leakage before balancing and splitting.
 
