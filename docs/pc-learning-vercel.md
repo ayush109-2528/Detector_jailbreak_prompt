@@ -38,7 +38,7 @@ Keep that terminal running. Closing it or sleeping/shutting down the PC stops le
 .\.venv\Scripts\python.exe scripts/package_vercel.py
 ```
 
-This writes `backend/deployment/`: a compact inference-only model, compressed CSV for Dataset Explorer, initial evaluation report, and SHA256 manifest. Training partitions, baseline binaries, local history and secrets are not deployed. `.vercelignore` excludes the large source data and training artifacts while including the prepared deployment directory. The generated files are intentionally Git-ignored; deploy with the CLI from this prepared checkout, not an unprepared Git build. Exact runtime versions are constrained in `requirements-deploy.txt` to match the serialized estimators. Python is 3.12.
+This writes `backend/deployment/`: a compact inference-only model, compressed CSV for Dataset Explorer, initial evaluation report, and SHA256 manifest. Training partitions, baseline binaries, local history and secrets are not deployed. `.vercelignore` excludes the large source data and training artifacts while including the prepared deployment directory. The generated files are intentionally Git-ignored; deploy with the CLI from this prepared checkout, not an unprepared Git build. Exact runtime versions are pinned directly in the self-contained `requirements.txt` to match the serialized estimators. Deployment does not need to resolve an included constraints file. Python is 3.12.
 
 ## Link your EXISTING Vercel project and deploy
 
