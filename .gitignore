@@ -11,3 +11,10 @@ __pycache__/
 .vercel/
 backend/trained_models/*.pkl
 backend/data/*.sqlite3*
+backend/trained_models/hmeg/
+backend/data/experiments/
+backend/data/routing_config.json
+backend/data/HMEG_300K_Augmented_Dataset.csv
+backend/data/augmented_training_report.json
+release/
+backend/deployment/

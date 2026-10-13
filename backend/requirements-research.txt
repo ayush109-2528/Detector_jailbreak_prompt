@@ -1,0 +1,4 @@
+-r requirements.txt
+# Optional research features. MiniLM weights must be cached separately.
+sentence-transformers>=3,<6
+

@@ -8,3 +8,10 @@
 **/tests/**
 frontend/dist/**
 docs/**
+backend/data/**
+backend/trained_models/**
+backend/scripts/**
+backend/migrations/**
+release/**
+# backend/deployment contains only compact, explicitly prepared inference assets.
+!backend/deployment/**

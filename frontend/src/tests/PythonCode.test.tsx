@@ -12,12 +12,12 @@ describe("code copy controls", () => {
     });
     render(<PythonCode />);
     fireEvent.click(
-      screen.getByRole("button", { name: "Copy Loading a dataset" }),
+      screen.getByRole("button", { name: "Copy Dataset and provenance" }),
     );
     await act(async () => {});
     await act(async () => vi.advanceTimersByTimeAsync(1000));
     fireEvent.click(
-      screen.getByRole("button", { name: "Copy Ensemble concept" }),
+      screen.getByRole("button", { name: "Copy Flat ensemble versus HMEG" }),
     );
     await act(async () => {});
     await act(async () => vi.advanceTimersByTimeAsync(900));
@@ -35,7 +35,7 @@ describe("code copy controls", () => {
     });
     render(<PythonCode />);
     fireEvent.click(
-      screen.getByRole("button", { name: "Copy Loading a dataset" }),
+      screen.getByRole("button", { name: "Copy Dataset and provenance" }),
     );
     await screen.findByText(
       "Clipboard unavailable. Select and copy the snippet manually.",

@@ -2,6 +2,9 @@ import { useState } from "react";
 import { Card, PageIntro, Badge, DemoNote } from "../components/UI";
 import { EnsembleFlow } from "../components/EnsembleFlow";
 import { useResearch } from "../hooks/ResearchContext";
+import { ResearchExperiments } from "../components/ResearchExperiments";
+import { ResearchProgression } from "../components/ResearchProgression";
+import { HmegFlow } from "../components/HmegFlow";
 const stages = [
   [
     "Dataset collection",
@@ -55,7 +58,7 @@ const stages = [
     "Expert model training",
     "Fit lightweight classifiers on documented category-focused datasets containing benign negatives.",
     "Sparse features + labels",
-    "Four trained experts",
+    "Five mechanism-specific experts (optional semantic encoder)",
   ],
   [
     "Hyperparameter tuning",
@@ -66,8 +69,8 @@ const stages = [
   [
     "Ensemble construction",
     "Combine expert outputs with an explicit strategy, weights, and decision threshold.",
-    "Four expert scores",
-    "Ensemble decision",
+    "Disjoint meta-training expert scores",
+    "Flat fusion and confidence-routed HMEG",
   ],
   [
     "Evaluation",
@@ -93,9 +96,12 @@ export function TrainingPipeline() {
         action={<Badge>12 RESEARCH STAGES</Badge>}
       />
       <DemoNote>
-        Workflow specification · Selecting a stage explains its role. This page
-        does not launch or claim completed model training.
+        Select a stage to inspect the methodology. The training controls below
+        fit real models on the imported CSV; stage cards do not claim completed
+        work.
       </DemoNote>
+      <ResearchProgression />
+      <ResearchExperiments trainingOnly />
       <div className="pipeline-page">
         <div className="stage-grid">
           {stages.map(([title, description, input], i) => (
@@ -141,24 +147,28 @@ export function TrainingPipeline() {
             </div>
           </Card>
           <Card
-            title="Conceptual flow"
-            subtitle="Click a stage to highlight its place in the workflow."
+            title="HMEG architecture"
+            subtitle="Architecture specification; no experts have executed in this diagram."
           >
-            <EnsembleFlow
-              stage={
-                selected < 1
-                  ? 0
-                  : selected < 5
-                    ? 2
-                    : selected < 8
-                      ? 4
-                      : selected < 10
-                        ? 5
-                        : selected === 10
-                          ? 6
-                          : 7
-              }
-            />
+            <HmegFlow />
+            <details>
+              <summary>Legacy stage-by-stage flow</summary>
+              <EnsembleFlow
+                stage={
+                  selected < 1
+                    ? 0
+                    : selected < 5
+                      ? 2
+                      : selected < 8
+                        ? 4
+                        : selected < 10
+                          ? 5
+                          : selected === 10
+                            ? 6
+                            : 7
+                }
+              />
+            </details>
           </Card>
         </div>
       </div>

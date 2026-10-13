@@ -15,5 +15,6 @@ export default defineConfig(({ mode }) => ({
   },
   // Vercel dev owns /api routing in services mode. Ordinary local development
   // still forwards browser requests to the independently running FastAPI app.
-  server: mode === "services" ? {} : { proxy: { "/api": "http://127.0.0.1:8000" } },
+  server:
+    mode === "services" ? {} : { proxy: { "/api": "http://127.0.0.1:8000" } },
 }));

@@ -1,0 +1,12 @@
+# Exact model/runtime versions used for this release. Python 3.12.14
+fastapi==0.143.0
+uvicorn[standard]==0.54.0
+scikit-learn==1.9.1
+pandas==2.3.3
+numpy==2.5.3
+joblib==1.6.0
+xgboost==3.4.1
+python-dotenv==1.2.4
+psycopg[binary]==3.3.6
+httpx==0.28.1
+filelock==3.32.7

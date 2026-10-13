@@ -6,6 +6,8 @@ class DatasetService:
     def __init__(self, directory: Path):
         explicit = os.getenv('DATASET_FILE')
         candidates = [directory / name for name in (
+            'HMEG_300K_Augmented_Dataset.csv.gz',
+            'HMEG_300K_Augmented_Dataset.csv',
             'jailbreak_detection_expanded_direct_source.csv',
             'jailbreak_detection_verified_only.csv',
             'combined_jailbreak_dataset_balanced.csv',
@@ -42,6 +44,8 @@ class DatasetService:
         actual_splits = 'split' in f
         splits = f['split'].value_counts().to_dict() if actual_splits else {'train': int(n*.7), 'validation': int(n*.15), 'test': n-int(n*.7)-int(n*.15)}
         return {'total': n, 'benign': int((f.label == 0).sum()), 'jailbreak': int((f.label == 1).sum()),
+                'synthetic_samples':int(pd.to_numeric(f['is_synthetic']).sum()) if 'is_synthetic' in f else None,
+                'original_samples':int((pd.to_numeric(f['is_synthetic'])==0).sum()) if 'is_synthetic' in f else None,
                 'demo_mode': self.demo_mode, 'dataset_file': self.filename, 'splits': splits, 'split_status': 'recorded' if actual_splits else 'planned',
                 'sources': counts('source'), 'categories': counts('category'), 'class_distribution': counts('class_name'),
                 'jailbreak_categories': [{'name': str(k), 'value': int(v)} for k, v in f.loc[f.label == 1, 'category'].value_counts().items()],

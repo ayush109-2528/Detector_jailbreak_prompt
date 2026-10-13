@@ -15,8 +15,20 @@ import {
 } from "../components/UI";
 import { EnsembleFlow } from "../components/EnsembleFlow";
 import { strategies } from "./Analyzer";
+import { HmegArchitecture } from "../components/HmegArchitecture";
 
 export function Ensemble() {
+  return (
+    <>
+      <HmegArchitecture />
+      <details>
+        <summary>Legacy four-expert ensemble inspector</summary>
+        <LegacyEnsemble />
+      </details>
+    </>
+  );
+}
+export function LegacyEnsemble() {
   const { latest } = useResearch();
   const catalog = useResource(api.experts);
   const history = useResource(() => api.feedback(1));
@@ -25,7 +37,7 @@ export function Ensemble() {
   const records = [
     ...(latest ? [latest] : []),
     ...(history.data?.items ?? []).filter(
-      (r) => r.analysis_id !== latest?.analysis_id,
+      (r) => r.analysis_id !== latest?.analysis_id && !("framework" in r),
     ),
   ];
   const result =

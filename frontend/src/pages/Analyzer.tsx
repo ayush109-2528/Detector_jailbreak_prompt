@@ -21,6 +21,7 @@ import {
 import { EnsembleFlow, stageNames } from "../components/EnsembleFlow";
 import type { Prediction, Strategy } from "../types";
 import { TrainingFeedback } from "../components/TrainingFeedback";
+import { HmegAnalyzer } from "../components/HmegAnalyzer";
 export const strategies: Record<Strategy, string> = {
   weighted_average: "Weighted average",
   average_probability: "Average probability",
@@ -28,6 +29,30 @@ export const strategies: Record<Strategy, string> = {
   maximum_confidence: "Maximum expert confidence",
 };
 export function Analyzer() {
+  const [legacy, setLegacy] = useState(false);
+  return (
+    <>
+      <div className="button-row">
+        <button
+          className="button secondary"
+          aria-pressed={!legacy}
+          onClick={() => setLegacy(false)}
+        >
+          HMEG research
+        </button>
+        <button
+          className="button secondary"
+          aria-pressed={legacy}
+          onClick={() => setLegacy(true)}
+        >
+          Legacy four-expert experiment
+        </button>
+      </div>
+      {legacy ? <LegacyAnalyzer /> : <HmegAnalyzer />}
+    </>
+  );
+}
+export function LegacyAnalyzer() {
   const { save, health } = useResearch();
   const [prompt, setPrompt] = useState("");
   const [strategy, setStrategy] = useState<Strategy>("weighted_average");
@@ -83,8 +108,8 @@ export function Analyzer() {
         </DemoNote>
       )}
       <p className="help-text" style={{ marginBottom: 16 }}>
-        Prompt tests and their results are saved in the configured database for reviewed
-        training-data collection.
+        Prompt tests and their results are saved in the configured database for
+        reviewed training-data collection.
       </p>
       <div className="analyzer-grid">
         <div>

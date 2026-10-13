@@ -23,6 +23,8 @@ export type Strategy =
   | "majority_voting"
   | "maximum_confidence";
 export interface Prediction {
+  framework?: string;
+  decision_layer?: number;
   analysis_id?: number;
   prompt: string;
   normalized_prompt: string;
@@ -72,6 +74,8 @@ export interface Distribution {
   value: number;
 }
 export interface Stats {
+  synthetic_samples?: number | null;
+  original_samples?: number | null;
   verification?: Distribution[];
   jailbreak_categories?: Distribution[];
   dataset_file?: string;

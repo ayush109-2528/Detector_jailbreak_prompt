@@ -2,6 +2,10 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { expect, it, vi } from "vitest";
 import { TrainingPipeline } from "../pages/TrainingPipeline";
 import { ResearchInfo } from "../pages/ResearchInfo";
+import { MemoryRouter } from "react-router-dom";
+vi.mock("../components/ResearchExperiments", () => ({
+  ResearchExperiments: () => null,
+}));
 vi.mock("../hooks/ResearchContext", () => ({
   useResearch: () => ({
     stats: {
@@ -13,7 +17,11 @@ vi.mock("../hooks/ResearchContext", () => ({
   }),
 }));
 it("shows imported split assignments and distinguishes them from completed training", () => {
-  render(<TrainingPipeline />);
+  render(
+    <MemoryRouter>
+      <TrainingPipeline />
+    </MemoryRouter>,
+  );
   fireEvent.click(
     screen.getByRole("button", { name: /Train \/ validation \/ test split/ }),
   );
@@ -33,7 +41,11 @@ it("shows imported split assignments and distinguishes them from completed train
   ).toHaveAttribute("aria-pressed", "true");
 });
 it("provides actual explanations for every research metric tooltip", () => {
-  render(<ResearchInfo />);
+  render(
+    <MemoryRouter>
+      <ResearchInfo />
+    </MemoryRouter>,
+  );
   const tooltips = screen.getAllByRole("tooltip", { hidden: true });
   expect(tooltips).toHaveLength(10);
   for (const tooltip of tooltips)

@@ -23,8 +23,9 @@ import {
   ErrorBox,
 } from "../components/UI";
 import { Donut, ModelChart } from "../charts/ResearchCharts";
+import { ResearchProgression } from "../components/ResearchProgression";
 export function Dashboard() {
-  const { stats, metrics, recent, health } = useResearch();
+  const { stats, metrics, recent } = useResearch();
   if (stats.error || metrics.error)
     return (
       <ErrorBox
@@ -57,16 +58,22 @@ export function Dashboard() {
           <FlaskConical size={24} />
         </div>
         <div>
-          <b>Lightweight models. A collective decision.</b>
+          <b>HMEG · Hierarchical Multi-Expert Guardrail</b>
           <p>
-            A multi-expert ensemble for detecting jailbreak prompts before they
-            reach an LLM.
+            Fast screening → confidence routing → deeper experts → learned
+            fusion.
           </p>
         </div>
         <Link to="/pipeline">
           Explore the pipeline <ArrowRight size={16} />
         </Link>
       </div>
+      <ResearchProgression />
+      <DemoNote>
+        Performance metrics below belong to the legacy experiment. Use Model
+        Comparison for measured HMEG experiments; no HMEG performance is
+        inferred from these cards.
+      </DemoNote>
       <div className="section-kicker">
         <span>AT A GLANCE</span>
         <Badge tone="neutral">
@@ -97,12 +104,8 @@ export function Dashboard() {
         />
         <Stat
           label="Expert models"
-          value="04"
-          note={
-            health.data?.demo_mode
-              ? "Four simulated expert roles"
-              : "Four loaded expert classifiers"
-          }
+          value="05"
+          note="Proposed HMEG · semantic expert optional"
           icon={<Layers size={18} />}
         />
         <Stat

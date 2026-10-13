@@ -20,15 +20,20 @@ def test_aliases_preserve_provenance_and_splits(tmp_path, monkeypatch):
     assert row['record_id'] == 'a' and row['verification_status'] == 'source-reported'
 
 
-def test_supplied_collection_is_selected_without_merging(monkeypatch):
+def test_supplied_collection_is_selected_without_merging(monkeypatch, tmp_path):
     monkeypatch.delenv('DATASET_FILE', raising=False)
-    directory = Path(__file__).resolve().parents[1]/'data'
+    # Isolate precedence from whichever large research CSV is currently installed.
+    directory = tmp_path
+    header = 'prompt,label,class_name,source,category\n'
+    (directory/'HMEG_300K_Augmented_Dataset.csv').write_text(
+        header + 'Hello,0,benign,New,benign\nIgnore rules,1,jailbreak,New,override\n')
+    (directory/'jailbreak_detection_verified_only.csv').write_text(
+        header + 'Earlier collection,0,benign,Old,benign\n')
     stats = DatasetService(directory).stats()
-    assert stats['total'] == 1015
-    assert (stats['jailbreak'], stats['benign']) == (640, 375)
-    assert stats['splits'] == {'train': 795, 'test': 113, 'validation': 107}
+    assert stats['total'] == 2
+    assert (stats['jailbreak'], stats['benign']) == (1, 1)
     monkeypatch.setenv('DATASET_FILE', str(directory/'jailbreak_detection_verified_only.csv'))
-    assert DatasetService(directory).stats()['total'] == 695
+    assert DatasetService(directory).stats()['total'] == 1
 
 
 def test_expert_catalog_matches_actual_demo_scoring(tmp_path):

@@ -1,5 +1,7 @@
 import { BookOpen, Target, FlaskConical } from "lucide-react";
 import { Card, PageIntro, Badge, Term } from "../components/UI";
+import { ResearchProgression } from "../components/ResearchProgression";
+import { LiteratureComparison } from "../components/LiteratureComparison";
 export function ResearchInfo() {
   return (
     <>
@@ -12,16 +14,44 @@ export function ResearchInfo() {
         <div>
           <Badge>AI / MACHINE LEARNING / NLP / LLM SECURITY</Badge>
           <h2>
-            Detection of Jailbreak Prompts Targeting Large Language Models Using
-            Machine Learning
+            Detection of Jailbreak Prompts Targeting Large Language Models
           </h2>
-          <p>
-            A lightweight ensemble guardrail built with classical machine
-            learning and sparse text features.
-          </p>
+          <p>HMEG — Hierarchical Multi-Expert Guardrail</p>
         </div>
         <BookOpen size={80} />
       </section>
+      <ResearchProgression />
+      <Card title="Proposed Research Contribution">
+        <p className="body-copy">
+          The proposed HMEG architecture investigates a hierarchical
+          jailbreak-detection framework in which heterogeneous machine-learning
+          experts specialize in different characteristics of malicious prompts.
+          Lightweight lexical and obfuscation experts perform initial screening.
+          Prompts with uncertain confidence are routed to deeper semantic,
+          anomaly, and instruction-manipulation experts. Their outputs are
+          subsequently combined by a learned meta-classifier.
+        </p>
+      </Card>
+      <Card title="Research questions">
+        <ol className="research-questions">
+          <li>
+            <b>RQ1:</b> How do individual single-layer jailbreak detectors
+            perform across different jailbreak categories?
+          </li>
+          <li>
+            <b>RQ2:</b> Does combining heterogeneous specialized experts improve
+            detection compared with individual classifiers?
+          </li>
+          <li>
+            <b>RQ3:</b> Can confidence-aware hierarchical routing reduce
+            computational cost while maintaining detection effectiveness?
+          </li>
+          <li>
+            <b>RQ4:</b> How well does the proposed architecture generalize to
+            unseen jailbreak attacks?
+          </li>
+        </ol>
+      </Card>
       <div className="two-columns">
         <Card title="Research objective" action={<Target size={22} />}>
           <p className="body-copy">
@@ -95,13 +125,15 @@ export function ResearchInfo() {
           attack families, benign false positives, and source leakage checks.
         </p>
         <p className="body-copy">
-          Training and evaluation remain separate from the presentation
-          interface. No deep-learning model is part of the proposed detector.
-          Language and dataset shift can affect generalization;
+          The training and evaluation controls invoke separate research modules.
+          MiniLM is an optional pretrained neural embedding extractor with a
+          classical Logistic Regression classifier; it is not trained end-to-end
+          here. Language and dataset shift can affect generalization;
           category-specific performance should be reported alongside aggregate
           metrics.
         </p>
       </Card>
+      <LiteratureComparison />
     </>
   );
 }

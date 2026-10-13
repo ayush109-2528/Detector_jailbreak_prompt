@@ -13,7 +13,8 @@ def experts(request: Request):
 @router.get('/health')
 def health(request: Request):
     p = request.app.state.predictor
-    return {'status': 'ok', 'demo_mode': p.demo_mode, 'mode_note': p.reason}
+    return {'status': 'ok', 'demo_mode': p.demo_mode, 'mode_note': p.reason,
+            'hmeg_trained': request.app.state.research.bundle is not None}
 
 @router.get('/dataset/stats')
 def stats(request: Request):

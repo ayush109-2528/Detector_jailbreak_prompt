@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { api } from "../api/client";
+import { api, request, API_BASE, researcherHeaders } from "../api/client";
 import { useResource } from "../hooks/useResource";
 import { Card, Badge, ErrorBox, Loading } from "./UI";
 import { Updating } from "./Updating";
@@ -12,6 +12,38 @@ export function TrainingFeedback({ revision }: { revision?: number }) {
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const history = useResource(() => api.feedback(page), `${page}:${revision}`);
+  const learning = useResource(
+    () =>
+      request<{
+        enabled: boolean;
+        state: string;
+        updated_at: string | null;
+        included: number;
+        excluded_holdout: number;
+        interval_seconds: number;
+        deployment?: string;
+      }>("/learning/status"),
+    `${revision}`,
+  );
+  async function download() {
+    try {
+      const response = await fetch(`${API_BASE}/training/examples.csv`, {
+        headers: researcherHeaders(),
+      });
+      if (!response.ok)
+        throw new Error(
+          "Researcher access required to export reviewed prompts.",
+        );
+      const url = URL.createObjectURL(await response.blob());
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "reviewed_training_examples.csv";
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Export failed");
+    }
+  }
   const displayedPage = history.data?.page ?? page;
   async function save() {
     if (editing === undefined) return;
@@ -22,7 +54,7 @@ export function TrainingFeedback({ revision }: { revision?: number }) {
       await api.review(editing, category === "benign" ? 0 : 1, category);
       setEditing(undefined);
       setMessage(
-        "Reviewed label saved. This prompt is now included in the training CSV.",
+        "Reviewed label saved. The learning worker can include this correction in its next validated training cycle.",
       );
       history.reload();
     } catch (e) {
@@ -36,20 +68,31 @@ export function TrainingFeedback({ revision }: { revision?: number }) {
       title="Training data collection"
       subtitle="Every successful analysis is saved in the configured database. Review the intended class before including a prompt in training."
       action={
-        <a
-          className="button secondary"
-          href="/api/training/examples.csv"
-          download
-        >
+        <button className="button secondary" onClick={download}>
           Export reviewed CSV
-        </a>
+        </button>
       }
     >
       <p className="help-text">
-        Predictions are observations, not correct labels. Saved examples do not
-        automatically retrain or change the detector. Duplicate normalized
-        prompts share one reviewed label and export once.
+        Predictions are observations, not correct labels. Only your reviewed
+        labels enter recurring training. Fixed evaluation prompts are excluded;
+        a candidate replaces the active detector only after passing validation.
       </p>
+      <p className="help-text">
+        Learning worker:{" "}
+        {learning.data?.enabled
+          ? learning.data.state.replaceAll("_", " ")
+          : "not enabled"}
+        .
+        {learning.data?.enabled &&
+          ` Checks approximately every ${Math.round(learning.data.interval_seconds / 60)} minutes. ${learning.data.included} reviewed prompts included; ${learning.data.excluded_holdout} excluded to protect evaluation.`}
+        {learning.data?.updated_at &&
+          ` Last heartbeat: ${new Date(learning.data.updated_at).toLocaleString()}.`}
+      </p>
+      <button className="button secondary" onClick={learning.reload}>
+        Refresh learning status
+      </button>
+      {learning.data?.deployment&&<p className="help-text">Model deployment: {learning.data.deployment.replaceAll('_',' ')}. A locally prepared model is not live until Vercel deployment succeeds.</p>}
       {history.data && (
         <div className="source-chips" style={{ margin: "16px 0" }}>
           <Badge tone="neutral">{history.data.total} saved analyses</Badge>
@@ -96,9 +139,11 @@ export function TrainingFeedback({ revision }: { revision?: number }) {
                       {row.prediction}
                     </Badge>
                     <div className="help-text">
-                      {row.ensemble_score.toFixed(3)} / threshold{" "}
-                      {row.threshold.toFixed(2)} ·{" "}
-                      {row.demo_mode ? "Demo" : "Trained"}
+                      {row.ensemble_score.toFixed(3)} /{" "}
+                      {row.framework === "hmeg"
+                        ? "decision layer " + row.decision_layer
+                        : "threshold " + row.threshold.toFixed(2)}{" "}
+                      · {row.demo_mode ? "Demo" : "Trained"}
                     </div>
                   </td>
                   <td>

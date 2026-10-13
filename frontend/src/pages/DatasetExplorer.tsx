@@ -61,6 +61,15 @@ export function DatasetExplorer() {
         </DemoNote>
       )}
       {stats.error && <ErrorBox message={stats.error} retry={stats.reload} />}{" "}
+      {!!s?.synthetic_samples && (
+        <DemoNote>
+          Augmented research dataset: {s.synthetic_samples.toLocaleString()}{" "}
+          synthetic variants and {s.original_samples?.toLocaleString()} original
+          records. Source names identify parent provenance; these are not
+          300,000 independently collected attacks. Training keeps parent
+          families separate.
+        </DemoNote>
+      )}
       {s?.dataset_file && (
         <p className="help-text" style={{ marginBottom: 16 }}>
           Loaded dataset: <strong>{s.dataset_file}</strong>

@@ -4,6 +4,9 @@ import { TrainingFeedback } from "../components/TrainingFeedback";
 import { api } from "../api/client";
 vi.mock("../api/client", () => ({
   api: { feedback: vi.fn(), review: vi.fn() },
+  request: vi.fn().mockResolvedValue({ enabled: false, state: "not_started" }),
+  API_BASE: "/api",
+  researcherHeaders: () => ({ "X-Admin-Key": "test-key" }),
 }));
 const history = {
   items: [
@@ -58,7 +61,7 @@ describe("training feedback", () => {
       screen.getByRole("button", { name: "Save reviewed label" }),
     );
     await screen.findByText(
-      "Reviewed label saved. This prompt is now included in the training CSV.",
+      "Reviewed label saved. The learning worker can include this correction in its next validated training cycle.",
     );
     expect(api.review).toHaveBeenCalledWith(1, 1, "general");
     expect(screen.getByText("Explain cloud computing.")).toBeVisible();
@@ -85,11 +88,21 @@ describe("training feedback", () => {
     expect(screen.getByLabelText("Reviewed class and category")).toBeVisible();
     expect(screen.queryByText(/Reviewed label saved/)).not.toBeInTheDocument();
   });
-  it("exports through a download link without navigating the app", async () => {
+  it("requires authenticated export and reports access errors without navigating", async () => {
+    const fetch = vi
+      .spyOn(globalThis, "fetch")
+      .mockResolvedValue({ ok: false } as Response);
     render(<TrainingFeedback />);
     await screen.findByText("Explain cloud computing.");
-    const link = screen.getByRole("link", { name: "Export reviewed CSV" });
-    expect(link).toHaveAttribute("href", "/api/training/examples.csv");
-    expect(link).toHaveAttribute("download");
+    fireEvent.click(
+      screen.getByRole("button", { name: "Export reviewed CSV" }),
+    );
+    await screen.findByText(
+      "Researcher access required to export reviewed prompts.",
+    );
+    expect(fetch).toHaveBeenCalledWith("/api/training/examples.csv", {
+      headers: { "X-Admin-Key": "test-key" },
+    });
+    fetch.mockRestore();
   });
 });

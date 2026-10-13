@@ -18,13 +18,14 @@ import {
 } from "lucide-react";
 import { useResearch } from "../hooks/ResearchContext";
 import { Badge } from "./UI";
+import { ResearcherAccess } from "./ResearcherAccess";
 const nav = [
   ["/", "Dashboard", LayoutDashboard],
   ["/dataset", "Dataset Explorer", Database],
   ["/pipeline", "Training Pipeline", Workflow],
   ["/models", "Model Comparison", ChartNoAxesCombined],
   ["/analyzer", "Live Prompt Analyzer", ScanText],
-  ["/ensemble", "Ensemble Visualization", Network],
+  ["/ensemble", "Ensemble & HMEG", Network],
   ["/code", "Python Code", Code2],
   ["/research", "Research Information", BookOpen],
 ] as const;
@@ -123,6 +124,7 @@ export function Layout() {
             <b>{nav.find((n) => n[0] === location.pathname)?.[1] || "Page"}</b>
           </div>
           <div className="header-actions">
+            <ResearcherAccess />
             {health.error && (
               <button className="button secondary" onClick={reconnect}>
                 Reconnect
@@ -140,9 +142,11 @@ export function Layout() {
               {health.error
                 ? "Unavailable"
                 : health.data
-                  ? health.data.demo_mode
-                    ? "Demo Mode"
-                    : "Trained Models"
+                  ? health.data.hmeg_trained
+                    ? "HMEG fitted · select mode in analyzer"
+                    : health.data.demo_mode
+                      ? "Demo Mode"
+                      : "Trained Models"
                   : "Checking mode"}
             </Badge>
             <button
@@ -162,7 +166,7 @@ export function Layout() {
             Detection of Jailbreak Prompts · M.Tech Research Prototype
           </span>
           <span>
-            Classical ML <i /> Explainable workflow <i /> Ensemble learning
+            HMEG research <i /> Confidence routing <i /> Learned fusion
           </span>
         </footer>
       </div>

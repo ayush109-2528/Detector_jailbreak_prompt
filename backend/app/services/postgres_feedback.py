@@ -11,7 +11,9 @@ from ..models.preprocessing import preprocess
 class PostgresFeedbackStore:
     def __init__(self, url):
         if not url.startswith(('postgresql://', 'postgres://')):
-            raise ValueError('DATABASE_URL must be a PostgreSQL connection URL')
+            raise ValueError('DATABASE_URL must be a PostgreSQL connection URL from Supabase Connect '
+                             '(Transaction pooler), not the HTTPS project URL or anon key. '
+                             'Store the HTTPS URL separately as SUPABASE_URL.')
         self._url = url
 
     def connect(self):

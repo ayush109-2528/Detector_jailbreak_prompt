@@ -6,11 +6,23 @@ import type {
   Stats,
   Strategy,
 } from "../types";
-async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await fetch(`/api${path}`, {
+export const API_BASE = (import.meta.env.VITE_API_BASE_URL || "/api").replace(
+  /\/$/,
+  "",
+);
+export function researcherHeaders(): Record<string, string> {
+  const key = sessionStorage.getItem("research-admin-key");
+  return key ? { "X-Admin-Key": key } : {};
+}
+export async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  const response = await fetch(`${API_BASE}${path}`, {
     ...init,
-    headers: { "Content-Type": "application/json", ...init?.headers },
-    signal: AbortSignal.timeout(30000),
+    headers: {
+      "Content-Type": "application/json",
+      ...researcherHeaders(),
+      ...init?.headers,
+    },
+    signal: init?.signal ?? AbortSignal.timeout(30000),
   });
   if (!response.ok) {
     let detail = "";
@@ -54,9 +66,12 @@ export const api = {
   stats: () => request<Stats>("/dataset/stats"),
   metrics: () => request<Metrics>("/models/metrics"),
   health: () =>
-    request<{ status: string; demo_mode: boolean; mode_note: string }>(
-      "/health",
-    ),
+    request<{
+      status: string;
+      demo_mode: boolean;
+      mode_note: string;
+      hmeg_trained?: boolean;
+    }>("/health"),
   samples: (params: URLSearchParams) =>
     request<{
       items: Sample[];

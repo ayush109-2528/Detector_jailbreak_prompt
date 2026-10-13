@@ -11,6 +11,10 @@ import {
 } from "../components/UI";
 import { ModelChart } from "../charts/ResearchCharts";
 import type { ModelMetric } from "../types";
+import { ResearchExperiments } from "../components/ResearchExperiments";
+import { ResearchProgression } from "../components/ResearchProgression";
+import { LiteratureComparison } from "../components/LiteratureComparison";
+import { AugmentedTrainingReport } from "../components/AugmentedTrainingReport";
 const metricNames = {
   accuracy: "Accuracy",
   precision: "Precision",
@@ -21,6 +25,36 @@ const metricNames = {
   inference_time_ms: "Inference Time",
 };
 export function ModelComparison() {
+  return (
+    <>
+      <PageIntro
+        eyebrow="A → B → C → D"
+        title="Model comparison"
+        description="Standalone guardrails, specialized experts, flat fusion, and proposed HMEG."
+      />
+      <ResearchProgression />
+      <Card title="Where are the other guardrails?">
+        <p className="body-copy">
+          Local standalone models and specialized experts appear in the measured
+          experiment table. Llama Guard, NeMo Guardrails, MoJE, RigorLLM and
+          EGuard are literature comparisons only; they are not integrated or
+          benchmarked here.
+        </p>
+        <a href="#known-guardrails">View known guardrail comparison ↓</a>
+      </Card>
+      <AugmentedTrainingReport />
+      <ResearchExperiments />
+      <section id="known-guardrails" style={{ scrollMarginTop: 90 }}>
+        <LiteratureComparison />
+      </section>
+      <details>
+        <summary>Legacy comparison charts and metrics</summary>
+        <LegacyModelComparison />
+      </details>
+    </>
+  );
+}
+export function LegacyModelComparison() {
   const { metrics } = useResearch();
   const [metric, setMetric] = useState("accuracy");
   if (metrics.error)

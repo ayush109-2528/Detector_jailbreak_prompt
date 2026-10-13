@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { beforeEach, expect, it, vi } from "vitest";
-import { Ensemble } from "../pages/Ensemble";
+import { LegacyEnsemble as Ensemble } from "../pages/Ensemble";
 import { api } from "../api/client";
 import type { Prediction } from "../types";
 vi.mock("../api/client", () => ({

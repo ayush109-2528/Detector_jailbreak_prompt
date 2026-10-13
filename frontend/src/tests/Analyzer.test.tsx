@@ -1,7 +1,7 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { beforeEach, afterEach, describe, it, expect, vi } from "vitest";
-import { Analyzer } from "../pages/Analyzer";
+import { LegacyAnalyzer as Analyzer } from "../pages/Analyzer";
 import { api } from "../api/client";
 vi.mock("../api/client", () => ({ api: { predict: vi.fn() } }));
 vi.mock("../hooks/ResearchContext", () => ({
