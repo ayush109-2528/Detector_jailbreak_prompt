@@ -43,6 +43,12 @@ def main():
             result = app.state.research.predict(prompt, 'trained', 'hmeg', 'weighted_average', None, None)
             assert not result['demo_mode']
             print(json.dumps({'prediction': result['prediction'], 'experts_executed': result['experts_executed']}), flush=True)
+        # Force deeper experts and learned XGBoost fusion to execute, even if
+        # both smoke probes above exit during fast screening.
+        result = app.state.research.predict('Explain cloud computing.', 'trained', 'flat', 'meta_xgboost', None, None)
+        assert not result['demo_mode'] and result['experts_executed'] >= 4
+        assert result['meta_classifier_score'] is not None
+        print(json.dumps({'flat_xgboost_fusion': 'passed', 'experts_executed': result['experts_executed']}), flush=True)
     print('PASS: packaged inference, dataset, Supabase reads, and review protection; no records written.')
 
 

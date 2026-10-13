@@ -62,6 +62,12 @@ After one successful manual deployment of this checkout, set `AUTO_DEPLOY_VERCEL
 
 This consumes your existing Vercel/Supabase quotas; it does not provide unlimited free hosting. No remote production deploy is claimed until Vercel reports success.
 
+## CPU-only deployment dependencies
+
+Linux deployment installs `xgboost-cpu==3.4.1` instead of the GPU-capable `xgboost` distribution. Both expose the `xgboost` Python module; the estimator version and saved model remain unchanged. Non-Linux environments keep `xgboost==3.4.1`. Do not install both distributions into the same environment.
+
+An isolated Python 3.12 Linux wheel installation measured 334.34 MB of dependencies, with no CUDA/NCCL directories. Together with 56.82 MB of deployment assets this is 391.15 MB, excluding source and Vercel-generated files. The hosted build is the authority for final bundle size. Test folders under `release/` are excluded from Git and Vercel uploads.
+
 ## Training provenance
 
 The user-supplied CSV has 300,000 records: 150,000 per class; 298,985 synthetic augmentations and 1,015 originals. Do not describe this as 300,000 independent real-world attacks. The source CSV is not modified. The training report separates augmented test and original-only test performance.
