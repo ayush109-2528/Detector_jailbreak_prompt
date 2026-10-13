@@ -17,4 +17,14 @@ backend/data/routing_config.json
 backend/data/HMEG_300K_Augmented_Dataset.csv
 backend/data/augmented_training_report.json
 release/
-backend/deployment/
+# Only the prepared inference release is eligible for Git deployment.
+backend/deployment/**
+!backend/deployment/manifest.json
+!backend/deployment/data/
+!backend/deployment/data/HMEG_300K_Augmented_Dataset.csv.gz
+!backend/deployment/data/augmented_training_report.json
+!backend/deployment/data/dataset.sha256
+!backend/deployment/models/
+!backend/deployment/models/hmeg/
+!backend/deployment/models/hmeg/active.txt
+!backend/deployment/models/hmeg/runtime.pkl

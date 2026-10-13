@@ -31,7 +31,7 @@ Browser verification of the current local page confirmed the 12 explanation cont
 1. Inspect the underlying Python exception in Vercel runtime logs.
 2. Link this checkout to the existing project, not a new project.
 3. Configure server-only `DATABASE_URL` and `ADMIN_API_KEY`; keep PC filesystem path overrides out of Vercel.
-4. Prepare deployment assets with `backend/scripts/package_vercel.py`. They are Git-ignored: pushing source alone does not publish them. Use the prepared checkout with the CLI as described in `pc-learning-vercel.md`.
+4. Prepare deployment assets with `backend/scripts/package_vercel.py`. The six prepared release files are now allowlisted for Git: commit and push them with the code for Git deployment, or use the prepared checkout with the CLI. The backend build checks their presence and hashes with `verify_deployment.py`.
 5. Deploy and verify the hosted Linux build, API startup, trained inference, protected review workflow, and deep-link routing. Local Windows tests do not prove hosted Linux dependency compatibility or final function bundle size.
 
 No production changes were made by this test run.

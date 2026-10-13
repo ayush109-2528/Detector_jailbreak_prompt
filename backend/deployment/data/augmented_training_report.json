@@ -1,0 +1,87 @@
+{
+  "version": "6f7b102b-aadd-4062-9105-ddf2d0c11eb9",
+  "dataset": "HMEG_300K_Augmented_Dataset.csv",
+  "dataset_sha256": "c89479410bb9b2dc3cacdb9e9115500d5026e8e59332a8d0fef1f4abd9de320b",
+  "created_at": "2026-10-12T19:40:02.446462+00:00",
+  "validation": {
+    "accuracy": 0.9892710917187173,
+    "precision": 0.9940776599031826,
+    "recall": 0.9875172660766358,
+    "f1": 0.9907866033619915,
+    "roc_auc": 0.99840403943337,
+    "fpr": 0.008265056777346557,
+    "fnr": 0.012482733923364199,
+    "confusion_matrix": [
+      [
+        13799,
+        115
+      ],
+      [
+        244,
+        19303
+      ]
+    ],
+    "samples": 33461,
+    "layer2_routing_rate": 0.08852096470517916,
+    "layer1_exit_rate": 0.9114790352948209,
+    "average_experts_executed": 2.1770419294103585
+  },
+  "activated": true,
+  "partition_counts": {
+    "base": 171493,
+    "meta": 62905,
+    "validation": 33461,
+    "test": 32141
+  },
+  "unavailable": {
+    "semantic": "Semantic expert unavailable: install optional dependencies and cache MiniLM locally."
+  },
+  "synthetic_rows": 298985,
+  "training_time": 1668.4081168999983,
+  "test": {
+    "accuracy": 0.9789365607790672,
+    "precision": 0.9719105934743513,
+    "recall": 0.9701658403145836,
+    "f1": 0.9710374331550802,
+    "roc_auc": 0.9955604805933594,
+    "fpr": 0.016044611847576187,
+    "fnr": 0.02983415968541631,
+    "confusion_matrix": [
+      [
+        20115,
+        328
+      ],
+      [
+        349,
+        11349
+      ]
+    ],
+    "samples": 32141,
+    "layer2_routing_rate": 0.11303319747363182,
+    "layer1_exit_rate": 0.8869668025263682,
+    "average_experts_executed": 2.2260663949472637
+  },
+  "original_only_test": {
+    "accuracy": 0.9705882352941176,
+    "precision": 0.9795918367346939,
+    "recall": 0.96,
+    "f1": 0.9696969696969697,
+    "roc_auc": 0.9946153846153847,
+    "fpr": 0.019230769230769232,
+    "fnr": 0.04,
+    "confusion_matrix": [
+      [
+        51,
+        1
+      ],
+      [
+        2,
+        48
+      ]
+    ],
+    "samples": 102,
+    "layer2_routing_rate": 0.10784313725490197,
+    "layer1_exit_rate": 0.892156862745098,
+    "average_experts_executed": 2.215686274509804
+  }
+}

@@ -30,7 +30,7 @@ def package():
     report=ROOT/'data/augmented_training_report.json'
     if report.exists():shutil.copy2(report,data/report.name)
     manifest=dict(model_version=name,dataset_sha256=dataset_digest,
-        files={str(p.relative_to(target)):dict(bytes=p.stat().st_size,sha256=hashlib.sha256(p.read_bytes()).hexdigest()) for p in target.rglob('*') if p.is_file() and p.name!='manifest.json'})
+        files={p.relative_to(target).as_posix():dict(bytes=p.stat().st_size,sha256=hashlib.sha256(p.read_bytes()).hexdigest()) for p in target.rglob('*') if p.is_file() and p.name!='manifest.json'})
     (target/'manifest.json').write_text(json.dumps(manifest,indent=2))
     print(json.dumps({'model_version':name,'deployment_asset_bytes':sum(x['bytes'] for x in manifest['files'].values())}),flush=True)
     return manifest

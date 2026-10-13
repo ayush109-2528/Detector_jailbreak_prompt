@@ -1,0 +1,2 @@
+# Release hashes must remain identical on Windows and Linux checkouts.
+backend/deployment/** -text

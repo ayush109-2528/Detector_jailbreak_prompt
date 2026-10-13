@@ -38,7 +38,9 @@ Keep that terminal running. Closing it or sleeping/shutting down the PC stops le
 .\.venv\Scripts\python.exe scripts/package_vercel.py
 ```
 
-This writes `backend/deployment/`: a compact inference-only model, compressed CSV for Dataset Explorer, initial evaluation report, and SHA256 manifest. Training partitions, baseline binaries, local history and secrets are not deployed. `.vercelignore` excludes the large source data and training artifacts while including the prepared deployment directory. The generated files are intentionally Git-ignored; deploy with the CLI from this prepared checkout, not an unprepared Git build. Exact runtime versions are pinned directly in the self-contained `requirements.txt` to match the serialized estimators. Deployment does not need to resolve an included constraints file. Python is 3.12.
+This writes `backend/deployment/`: a compact inference-only model, compressed CSV for Dataset Explorer, initial evaluation report, and SHA256 manifest. Training partitions, baseline binaries, local history and secrets are not deployed. `.vercelignore` excludes the large source data and training artifacts while including the prepared deployment directory. The six prepared release files are allowlisted in `.gitignore` so Git-based deployments can include them. They must actually be committed and pushed with the code; changing the ignore rules alone does not upload them. Alternatively, deploy the prepared checkout with the CLI. Exact runtime versions are pinned directly in the self-contained `requirements.txt` to match the serialized estimators. Deployment does not need to resolve an included constraints file. Python is 3.12.
+
+For a Git-based deployment, include `backend/deployment/`, `backend/verify_deployment.py`, `vercel.json`, and the updated `.gitignore` with the release. The backend build runs `python verify_deployment.py` and rejects missing or corrupted assets before publishing. Do not commit `.env`, raw training artifacts or local history. Every later model update must include the updated release assets and manifest, or be deployed from the PC using the CLI.
 
 ## Link your EXISTING Vercel project and deploy
 

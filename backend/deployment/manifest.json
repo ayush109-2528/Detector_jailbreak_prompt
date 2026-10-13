@@ -1,0 +1,26 @@
+{
+  "model_version": "48ce7005-e236-4a84-844f-5cb9207a074c.pkl",
+  "dataset_sha256": "c89479410bb9b2dc3cacdb9e9115500d5026e8e59332a8d0fef1f4abd9de320b",
+  "files": {
+    "data\\augmented_training_report.json": {
+      "bytes": 2248,
+      "sha256": "6a01b1533f52dd7a11be274ef5f89c653e1b753240049d9b8f441114b9ee34e9"
+    },
+    "data\\dataset.sha256": {
+      "bytes": 64,
+      "sha256": "0cbe1d9d931ea4632de5630f398f63768e706e7b2a29d3fab114890e84e24af0"
+    },
+    "data\\HMEG_300K_Augmented_Dataset.csv.gz": {
+      "bytes": 55600350,
+      "sha256": "b6d820c4f64f6375459a2b3e97f3b3c42762070916b852ca2b4e6e123b4d53e2"
+    },
+    "models\\hmeg\\active.txt": {
+      "bytes": 11,
+      "sha256": "17d53ff207981ea7b1c09330f981706d7a623c1fa2947a3678070340d48b3080"
+    },
+    "models\\hmeg\\runtime.pkl": {
+      "bytes": 1211822,
+      "sha256": "bff68d32ea2cf78b3d0bc82de1133fed6c7a9c3c160d5c54738d147300b67b8f"
+    }
+  }
+}
